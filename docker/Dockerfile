@@ -56,12 +56,12 @@ RUN curl -fsSL https://get.docker.com -o- | sh && \
     apt-get clean
 
 # Install Docker-Compose
-RUN curl -L -o /usr/local/bin/docker-compose \
+RUN curl --insecure -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 
 RUN cd /tmp && \
-    curl -sL -o git.tgz \
+    curl --insecure -sL -o git.tgz \
     https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
     tar zxf git.tgz  && \
     cd git-${GIT_VERSION}  && \
@@ -75,8 +75,8 @@ RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 WORKDIR /home/runner
 
 RUN if [ $(uname -m)  = "armv7l" ]; then GH_RUNNER_NAME="actions-runner-linux-arm"; else GH_RUNNER_NAME="actions-runner-linux-x64"; fi \
-    && GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
-    && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/${GH_RUNNER_NAME}-${GH_RUNNER_VERSION}.tar.gz \
+    && GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --insecure --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
+    && curl --insecure -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/${GH_RUNNER_NAME}-${GH_RUNNER_VERSION}.tar.gz \
     && tar -zxf ${GH_RUNNER_NAME}-${GH_RUNNER_VERSION}.tar.gz \
     && rm -f ${GH_RUNNER_NAME}-${GH_RUNNER_VERSION}.tar.gz \
     && ./bin/installdependencies.sh \
